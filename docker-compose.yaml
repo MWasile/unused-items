@@ -1,0 +1,9 @@
+services:
+  unused_items_backend:
+    build:
+      context: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    volumes:
+      - ../unused-items:/app
