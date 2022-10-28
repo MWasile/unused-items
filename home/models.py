@@ -11,9 +11,9 @@ class Category(models.Model):
 
 class Institution(models.Model):
     class Types(models.TextChoices):
-        FUNDATION = 'Fundacja'
-        NGO = 'Organizacja Pozarządowa'
-        LOCAL_COLLECTION = 'Zbiórka Lokalna'
+        FUNDATION = 'FUN', 'Fundacja'
+        NGO = 'NGO', 'Organizacja Pozarządowa'
+        LOCAL_COLLECTION = 'LOC', 'Zbiórka Lokalna'
 
     name = models.CharField(max_length=150)
     decription = models.TextField(max_length=1000)

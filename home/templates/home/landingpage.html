@@ -74,7 +74,7 @@
         </div>
       </div>
 
-      <a href="#" class="btn btn--large">Załóż konto</a>
+      <a href="{% url 'user:register' %}" class="btn btn--large">Załóż konto</a>
     </section>
 
     <section id="about-us" class="about-us">
@@ -100,33 +100,18 @@
         <p>W naszej bazie znajdziesz listę zweryfikowanych Fundacji, z którymi współpracujemy. Możesz sprawdzić czym się zajmują, komu pomagają i czego potrzebują.</p>
 
         <ul class="help--slides-items">
-          <li>
-            <div class="col">
-              <div class="title">Fundacja "Dbam o Zdrowie"</div>
-              <div class="subtitle">Cel i misja: Pomoc dzieciom z ubogich rodzin.</div>
-            </div>
 
-            <div class="col"><div class="text">ubrania, jedzenie, sprzęt AGD, meble, zabawki</div></div>
-          </li>
+            {% for fundation in org.FUN %}
+                <li>
+                    <div class="col">
+                    <div class="title">Fundacja "{{ fundation.name }}"</div>
+                <div class="subtitle">Cel i misja: {{  fundation.decription }}.</div>
+                </div>
+                <div class="col"><div class="text">ubrania, jedzenie, sprzęt AGD, meble, zabawki</div></div>
+            </li>
 
-          <li>
-            <div class="col">
-              <div class="title">Fundacja “Dla dzieci"</div>
-              <div class="subtitle">Cel i misja: Pomoc osobom znajdującym się w trudnej sytuacji życiowej.</div>
-            </div>
+            {% endfor %}
 
-            <div class="col"><div class="text">ubrania, meble, zabawki</div></div>
-          </li>
-
-          <li>
-            <div class="col">
-              <div class="title">Fundacja “Bez domu”</div>
-              <div class="subtitle">Cel i misja: Pomoc dla osób nie posiadających miejsca zamieszkania</div>
-            </div>
-
-            <div class="col"><div class="text">ubrania, jedzenie, ciepłe koce</div></div>
-          </li>
-        </ul>
         <!-- Pagination
         <ul class="help--slides-pagination">
           <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>

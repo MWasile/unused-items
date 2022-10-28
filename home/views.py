@@ -13,6 +13,11 @@ class LandingPageView(TemplateView):
             'institutions_count': models.Institution.objects.count(),
             'bags_count': models.Donation.objects.aggregate(Sum('quantity'))
         }
+        context['org'] = {
+            'FUN': models.Institution.objects.filter(type='FUN')[:3],
+            'NGO': models.Institution.objects.filter(type='NGO')[:3],
+            'LOC': models.Institution.objects.filter(type='LOC')[:3]
+        }
         return context
 
 
