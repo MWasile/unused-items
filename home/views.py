@@ -1,24 +1,28 @@
 from django.db.models.aggregates import Sum
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from . import models
 
 
-class LandingPageView(TemplateView):
+class LandingPageView(ListView):
     template_name = 'home/landingpage.html'
+    model = models.Institution
+    context_object_name = 'institutions'
+    paginate_by = 5
+    ordering = ['name']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['counts'] = {
-            'institutions_count': models.Institution.objects.count(),
+            'institutions_count': self.model.objects.count(),
             'bags_count': models.Donation.objects.aggregate(Sum('quantity'))
         }
-        context['org'] = {
-            'FUN': models.Institution.objects.filter(type='FUN')[:3],
-            'NGO': models.Institution.objects.filter(type='NGO')[:3],
-            'LOC': models.Institution.objects.filter(type='LOC')[:3]
-        }
         return context
+
+    def get_queryset(self):
+        if not self.kwargs.get('fundation_type'):
+            return models.Institution.objects.filter(type='FUN')
+        return models.Institution.objects.filter(type=self.kwargs['fundation_type'].strip())
 
 
 class AddDonationView(TemplateView):
