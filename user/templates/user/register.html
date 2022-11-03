@@ -25,21 +25,47 @@
 
     <section class="login-page">
         <h2>Załóż konto</h2>
-        <form>
+        <form method="post" action="">
+            {% csrf_token %}
+
+            {% if form.errors %}
+                <p>{{ form.errors }}</p>
+            {% endif %}
             <div class="form-group">
-                <input type="text" name="name" placeholder="Imię"/>
+                {% if form.errors.username %}
+                    <p>{{ form.errors.username }}</p>
+                {% endif %}
+                <label for="username"></label>
+                <input type="text" id="username" name="username" placeholder="Imię"/>
             </div>
+
             <div class="form-group">
-                <input type="text" name="surname" placeholder="Nazwisko"/>
+                {% if form.errors.last_name %}
+                    <p>{{ form.errors.last_name }}</p>
+                {% endif %}
+                <label for="last_name"></label>
+                <input type="text" id="last_name" name="last_name" placeholder="Nazwisko"/>
             </div>
+
             <div class="form-group">
-                <input type="email" name="email" placeholder="Email"/>ś
+                {% if form.errors.emial %}
+                    <p>{{ form.errors.emial }}</p>
+                {% endif %}
+                <label for="email"></label>
+                <input type="email" id="email" name="email" placeholder="Email"/>ś
             </div>
+
             <div class="form-group">
-                <input type="password" name="password" placeholder="Hasło"/>
+                {% if form.errors.password %}
+                    <p>{{ form.errors.password }}</p>
+                {% endif %}
+                <label for="password"></label>
+                <input type="password" id="password" name="password" placeholder="Hasło"/>
             </div>
+
             <div class="form-group">
-                <input type="password" name="password2" placeholder="Powtórz hasło"/>
+                <label for="re_password"></label>
+                <input type="password" id="re_password" name="re_password" placeholder="Powtórz hasło"/>
             </div>
 
             <div class="form-group form-group--buttons">
