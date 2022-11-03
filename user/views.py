@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView, FormView
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 
@@ -17,12 +17,8 @@ class LoginUserView(FormView):
         return super().form_invalid(form)
 
     def form_valid(self, form):
-
-        user = authenticate(self.request, email=form.cleaned_data['user_email'], password=form.cleaned_data['password'])
-
-        if user:
-            login(self.request, user)
-            return super().form_valid(form)
+        user = get_user_model().objects.get(email=form.cleaned_data['user_email'])
+        login(self.request, user)
 
         return super().form_valid(form)
 
@@ -35,3 +31,11 @@ class RegiserUserView(FormView):
     def form_valid(self, form):
         new_user = form.create_new_user()
         return super().form_valid(form)
+
+
+class UserLogoutView(TemplateView):
+    template_name = ''
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect(reverse_lazy('home:landing_page'))
