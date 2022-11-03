@@ -1,5 +1,7 @@
 from django.db.models.aggregates import Sum
 from django.views.generic import TemplateView, ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 from . import models
 
@@ -25,5 +27,12 @@ class LandingPageView(ListView):
         return models.Institution.objects.filter(type=self.kwargs['fundation_type'].strip())
 
 
-class AddDonationView(TemplateView):
+class AddDonationView(LoginRequiredMixin, TemplateView):
     template_name = 'home/form.html'
+    login_url = reverse_lazy('user:login')
+    redirect_field_name = reverse_lazy('user:register')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = models.Category.objects.all()
+        return context
