@@ -35,4 +35,6 @@ class AddDonationView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = models.Category.objects.all()
+        context['institutions'] = models.Institution.objects.all()
         return context
+
