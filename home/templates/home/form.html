@@ -125,8 +125,8 @@
                     </div>
 
                     <div class="form-group form-group--buttons">
-                        <button type="button" class="btn prev-step">Wstecz</button>
-                        <button type="button" class="btn next-step">Dalej</button>
+                        <button type="button" class="btn prev-step institution-show-reset stage-2">Wstecz</button>
+                        <button type="button" class="btn next-step stage-2">Dalej</button>
                     </div>
                 </div>
 
@@ -137,9 +137,11 @@
 
                     {% for institution in institutions %}
 
-                        <div class="form-group form-group--checkbox to-filter">
+                        <div class="form-group form-group--checkbox to-filter institution">
                             <label>
-                                <input type="radio" name="organization" value="old"/>
+                                <input type="radio" name="organization" value="old"
+                                       data-institution-id="{{ institution.id }}"
+                                       data-institution-name="{{ institution.name }}"/>
                                 <span class="checkbox radio"></span>
                                 <span class="description"
                                       data-category="
@@ -158,7 +160,7 @@
 
                     <div class="form-group form-group--buttons">
                         <button type="button" class="btn prev-step">Wstecz</button>
-                        <button type="button" class="btn next-step">Dalej</button>
+                        <button type="button" class="btn next-step stage-4">Dalej</button>
                     </div>
                 </div>
 
@@ -210,7 +212,7 @@
                     </div>
                     <div class="form-group form-group--buttons">
                         <button type="button" class="btn prev-step">Wstecz</button>
-                        <button type="button" class="btn next-step">Dalej</button>
+                        <button type="button" class="btn next-step stage-5">Dalej</button>
                     </div>
                 </div>
 
@@ -224,14 +226,14 @@
                             <ul>
                                 <li>
                                     <span class="icon icon-bag"></span>
-                                    <span class="summary--text"
+                                    <span class="summary--text" id="bags"
                                     >4 worki ubrań w dobrym stanie dla dzieci</span
                                     >
                                 </li>
 
                                 <li>
                                     <span class="icon icon-hand"></span>
-                                    <span class="summary--text"
+                                    <span class="summary--text" id="organization"
                                     >Dla fundacji "Mam marzenie" w Warszawie</span
                                     >
                                 </li>
@@ -242,19 +244,19 @@
                             <div class="form-section--column">
                                 <h4>Adres odbioru:</h4>
                                 <ul>
-                                    <li>Prosta 51</li>
-                                    <li>Warszawa</li>
-                                    <li>99-098</li>
-                                    <li>123 456 789</li>
+                                    <li id="address">Prosta 51</li>
+                                    <li id="city">Warszawa</li>
+                                    <li id="post-code">99-098</li>
+                                    <li id="phone">123 456 789</li>
                                 </ul>
                             </div>
 
                             <div class="form-section--column">
                                 <h4>Termin odbioru:</h4>
                                 <ul>
-                                    <li>13/12/2018</li>
-                                    <li>15:40</li>
-                                    <li>Brak uwag</li>
+                                    <li id="date">13/12/2018</li>
+                                    <li id="hour">15:40</li>
+                                    <li id="more_info">Brak uwag</li>
                                 </ul>
                             </div>
                         </div>
@@ -262,7 +264,7 @@
 
                     <div class="form-group form-group--buttons">
                         <button type="button" class="btn prev-step">Wstecz</button>
-                        <button type="submit" class="btn">Potwierdzam</button>
+                        <button type="submit" class="btn stage-6">Potwierdzam</button>
                     </div>
                 </div>
             </form>

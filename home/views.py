@@ -1,5 +1,8 @@
+import json
+from django.http import HttpResponse
+from django.db import DatabaseError
 from django.db.models.aggregates import Sum
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 
@@ -38,3 +41,30 @@ class AddDonationView(LoginRequiredMixin, TemplateView):
         context['institutions'] = models.Institution.objects.all()
         return context
 
+    def post(self, request, *args, **kwargs):
+        print(self.request.body)
+        data_from_user = json.loads(self.request.body)
+        try:
+            donation = models.Donation.objects.create(
+                quantity=data_from_user['bagCount'],
+                institution_id=data_from_user['organizationId'],
+                address=data_from_user['userStreet'],
+                phone_number=data_from_user['userPhone'],
+                city=data_from_user['userCity'],
+                zip_code=data_from_user['userPostCode'],
+                pick_up_date=data_from_user['userDate'],
+                pick_up_time=data_from_user['userTime'],
+                pick_up_comment=data_from_user['userPickUpComment'],
+                user=self.request.user,
+            )
+            donation.save()
+            return HttpResponse(status=200)
+
+        except DatabaseError:
+            return HttpResponse(status=400)
+        finally:
+            return HttpResponse(status=404)
+
+
+class DonationConfirmationView(LoginRequiredMixin, TemplateView):
+    template_name = 'home/form-confirmation.html'
