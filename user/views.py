@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect
 
 from . import forms
+from home import models
 
 
 class LoginUserView(FormView):
@@ -39,3 +40,15 @@ class UserLogoutView(TemplateView):
     def get(self, request, *args, **kwargs):
         logout(request)
         return redirect(reverse_lazy('home:landing_page'))
+
+
+class UserDetailView(TemplateView):
+    template_name = 'user/detail.html'
+    context_object_name = 'donation'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = get_user_model().objects.get(id=self.request.user.id)
+        context['donations'] = models.Donation.objects.filter(user_id=user.id)
+        print(context['donations'], 'XDDD', user.id)
+        return context

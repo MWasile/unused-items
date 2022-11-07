@@ -6,10 +6,17 @@
 {% block content %}
     <header class="header--main-page">
         <nav class="container container--70">
-            <ul class="nav--actions">
-                <li><a href="{% url 'user:login' %}" class="btn btn--small btn--without-border">Zaloguj</a></li>
-                <li><a href="{% url 'user:register' %}" class="btn btn--small btn--highlighted">Załóż konto</a></li>
-            </ul>
+            {% if user.is_authenticated %}
+                <ul class="nav--actions">
+                    <li><a href="{% url 'user:detail' %}" class="btn btn--small btn--without-border">Profil</a></li>
+                </ul>
+            {% else %}
+                <ul class="nav--actions">
+                    <li><a href="{% url 'user:login' %}" class="btn btn--small btn--without-border">Zaloguj</a></li>
+                    <li><a href="{% url 'user:register' %}" class="btn btn--small btn--highlighted">Załóż konto</a></li>
+                </ul>
+            {% endif %}
+
 
             <ul>
                 <li><a href="" class="btn btn--without-border active">Start</a></li>

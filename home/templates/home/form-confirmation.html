@@ -12,13 +12,16 @@
                     {% if user.is_authenticated %}
                         Witaj {{ user.username }}
                         <ul class="dropdown">
-                            <li><a href="#">Profil</a></li>
+                            <li><a href="{% url 'user:detail' %}">Profil</a></li>
                             <li><a href="#">Ustawienia</a></li>
                             {% if user.is_superuser %}
                                  <li><a href="/admin/">Panel Administracyjny</a></li>
                             {% endif %}
                             <li><a href="{% url 'user:logout' %}">Wyloguj</a></li>
                         </ul>
+                    {% else %}
+                        <li><a href="{% url 'user:login' %}" class="btn btn--small btn--without-border">Zaloguj</a></li>
+                        <li><a href="{% url 'user:register' %}" class="btn btn--small btn--highlighted">Załóż konto</a></li>
                     {% endif %}
                 </li>
             </ul>
