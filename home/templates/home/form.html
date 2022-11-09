@@ -13,7 +13,7 @@
                         Witaj {{ user.username }}
                         <ul class="dropdown">
                             <li><a href="{% url 'user:detail' %}">Profil</a></li>
-                            <li><a href="#">Ustawienia</a></li>
+                            <li><a href="{% url 'user:password'  %}">Ustawienia</a></li>
                             {% if user.is_superuser %}
                                 <li><a href="/admin/">Panel Administracyjny</a></li>
                             {% else %}

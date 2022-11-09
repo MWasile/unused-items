@@ -52,7 +52,7 @@ class LoginUserForm(forms.Form):
         user_email = self.cleaned_data['user_email']
 
         if not get_user_model().objects.filter(email=user_email).exists():
-            raise forms.ValidationError('Email doesnt exist')
+            raise forms.ValidationError('Email doesnt exist.')
 
         return user_email
 
@@ -68,5 +68,24 @@ class LoginUserForm(forms.Form):
         if not user.check_password(password):
             raise forms.ValidationError('Incorrect password.')
 
-
         return password
+
+
+class PasswordChangeForm(forms.Form):
+    old_password = forms.CharField(max_length=200)
+    new_password = forms.CharField(max_length=200)
+    re_new_password = forms.CharField(max_length=200)
+
+    def clean_new_password(self):
+        new_password = self.cleaned_data['new_password']
+        re_new_password = self.data['re_new_password']
+
+        print(vars(self))
+
+        if new_password != re_new_password:
+            raise forms.ValidationError('Passwords do not match')
+
+        if len(new_password) < 6:
+            raise forms.ValidationError('Password must be at least 6 characters')
+
+        return new_password

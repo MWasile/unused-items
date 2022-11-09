@@ -26,13 +26,23 @@
                 <li><h2>Twoje nazwisko: {{ user.last_name }}</h2></li>
                 <li><h2>Twój email: {{ user.email }}</h2></li>
 
-                <h1>Twoje Dotacje:</h1>
+                <h2>Twoje oczekujące dotacje:</h2>
 
                     {% for donation in donations %}
                         <li>
                             <p>Ilość worków: {{ donation.quantity }}</p>
-                            <a>Nazwa organizacji: {{ donation.institution.name }}</a>
-                            <a>Data odbioru: {{ donation.pick_up_date }}</a>
+                            <p>Nazwa organizacji: {{ donation.institution.name }}</p>
+                            <p>Planowana data odbioru: {{ donation.pick_up_date }}</p>
+                            <a class='' href="{% url 'user:taken' donation.pk %}">Potwierdź oderanie</a>
+                        </li>
+                    {% endfor %}
+
+                <h2>Twoje odebrane dotacje:</h2>
+                    {% for donation in taken_donations %}
+                        <li>
+                            <p>Ilość worków odebranych: {{ donation.quantity }}</p>
+                            <p>Nazwa organizacji: {{ donation.institution.name }}</p>
+                            <P>Odebrane: {{ donation.pick_up_date }}</P>
                         </li>
                     {% endfor %}
             </ul>

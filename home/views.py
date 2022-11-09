@@ -42,7 +42,6 @@ class AddDonationView(LoginRequiredMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print(self.request.body)
         data_from_user = json.loads(self.request.body)
         try:
             donation = models.Donation.objects.create(
@@ -56,14 +55,15 @@ class AddDonationView(LoginRequiredMixin, TemplateView):
                 pick_up_time=data_from_user['userTime'],
                 pick_up_comment=data_from_user['userPickUpComment'],
                 user=self.request.user,
+                # TODO: Set default value in model
             )
             donation.save()
             return HttpResponse(status=200)
 
         except DatabaseError:
             return HttpResponse(status=400)
-        finally:
-            return HttpResponse(status=404)
+        # finally:
+        #     return HttpResponse(status=404)
 
 
 class DonationConfirmationView(LoginRequiredMixin, TemplateView):
