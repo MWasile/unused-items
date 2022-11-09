@@ -1,10 +1,10 @@
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, FormView, View
 from django.contrib.auth import login, authenticate, logout, get_user_model
-from django.contrib.auth.forms import PasswordChangeForm
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 
 from . import forms
+from . import tokens
 from home import models
 
 
@@ -32,7 +32,14 @@ class RegiserUserView(FormView):
 
     def form_valid(self, form):
         new_user = form.create_new_user()
+        self.send_activation_email(new_user)
         return super().form_valid(form)
+
+    def send_activation_email(self, user):
+        token = tokens.token_generator.make_token(user)
+        user.email_user(
+            'Activate your account',
+            f'Please click the link to activate your account: http://{self.request.get_host()}/user/activate/{user.pk}/{token}')
 
 
 class UserLogoutView(TemplateView):
@@ -80,3 +87,17 @@ class UserChangePasswordView(FormView):
 
         form.add_error('old_password', 'Wrong password')
         return super().form_invalid(form)
+
+
+class ActivateUserView(View):
+    def get(self, request, *args, **kwargs):
+
+        print('Token:', kwargs.get('token'))
+        print('PK:', kwargs.get('pk'))
+
+        user = get_user_model().objects.get(id=kwargs.get('pk'))
+        if tokens.token_generator.check_token(user, kwargs.get('token')):
+            user.is_active = True
+            user.save()
+            return redirect(reverse_lazy('user:login'))
+        return redirect(reverse_lazy('home:landing_page'))

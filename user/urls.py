@@ -10,4 +10,5 @@ urlpatterns = [
     path('detail', views.UserDetailView.as_view(), name='detail'),
     path('donation/<int:pk>', views.UserDonationUpdateStatusView.as_view(), name='taken'),
     path('password', views.UserChangePasswordView.as_view(), name='password'),
+    path('activate/<int:pk>/<str:token>', views.ActivateUserView.as_view(), name='activate'),
 ]
