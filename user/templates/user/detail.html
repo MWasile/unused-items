@@ -6,8 +6,12 @@
 
 {% block content %}
 
+    <body>
     <header>
         <nav class="container container--70">
+            <ul class="nav--actions">
+            </ul>
+
             <ul>
                 <li><a href="{% url 'home:landing_page' %}">Start</a></li>
                 <li><a href="{% url 'home:landing_page' %}#steps" class="btn btn--without-border">O co chodzi?</a></li>
@@ -18,36 +22,91 @@
                 <li><a href="{% url 'home:landing_page' %}#contact" class="btn btn--without-border">Kontakt</a></li>
             </ul>
         </nav>
+    </header>
+
+    <section id="help" class="help">
+        <h2>Szczegóły konta</h2>
+
+        <ul class="help--buttons">
+            <li data-id="1"><a href="{% url 'user:detail' 'donations_in_progress' %}" class="XD">Dary w trakcie
+                przekazywania</a></li>
+            <li data-id="2"><a href="{% url 'user:detail' 'realized_donations' %}" class="XD">Dary odebrane</a>
+            </li>
+            <li data-id="3"><a href="{% url 'user:detail' 'user_detail' %}" class="XD">Informacje o koncie</a>
+            </li>
+        </ul>
+
+        <!-- SLIDE 1 -->
+
+        <div class="help--slides active" data-id="1">
+            <ul class="help--slides-items">
 
 
-        <div>
-            <ul>
-                <li><h2>Twoje imię: {{ user.first_name }}</h2></li>
-                <li><h2>Twoje nazwisko: {{ user.last_name }}</h2></li>
-                <li><h2>Twój email: {{ user.email }}</h2></li>
-
-                <h2>Twoje oczekujące dotacje:</h2>
-
-                    {% for donation in donations %}
+                {% if donations_in_progress %}
+                    {% for donation in donations_in_progress %}
                         <li>
-                            <p>Ilość worków: {{ donation.quantity }}</p>
-                            <p>Nazwa organizacji: {{ donation.institution.name }}</p>
-                            <p>Planowana data odbioru: {{ donation.pick_up_date }}</p>
-                            <a class='' href="{% url 'user:taken' donation.pk %}">Potwierdź oderanie</a>
+                            <div class="col">
+                                <div class="title">Fundacja: {{ donation.institution.name }}</div>
+                                <div class="subtitle">Cel i misja: {{ donation.institution.decription }}.</div>
+                            </div>
+                            <div class="col">
+                                <div class="text">
+                                    <a href="{% url 'user:taken' donation.pk %}">Potwierdź odebranie!</a></div>
+                            </div>
                         </li>
                     {% endfor %}
+                {% endif %}
 
-                <h2>Twoje odebrane dotacje:</h2>
-                    {% for donation in taken_donations %}
+
+
+                {% if realized_donations %}
+                    {% for donation in realized_donations %}
                         <li>
-                            <p>Ilość worków odebranych: {{ donation.quantity }}</p>
-                            <p>Nazwa organizacji: {{ donation.institution.name }}</p>
-                            <P>Odebrane: {{ donation.pick_up_date }}</P>
+                            <div class="col">
+                                <div class="title">Fundacja "{{ donation.institution.name }}"</div>
+                                <div class="subtitle">Cel i misja: {{ donation.institution.decription  }}.</div>
+                            </div>
+                            <div class="col">
+                                <div class="text">Data odebrania: {{ donation.pick_up_date }}</div>
+                            </div>
                         </li>
                     {% endfor %}
+                {% endif %}
+
+
+                {% if user_detail %}
+                    <li>
+                        <div class="col">
+                            <div class="title">Twój e-mail:</div>
+                        </div>
+                        <div class="col">
+                            <div class="text">{{ user_detail.email }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="col">
+                            <div class="title">Twoje imię:</div>
+                        </div>
+                        <div class="col">
+                            <div class="text">{{ user_detail.username }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="col">
+                            <div class="title">Twoje nazwisko:</div>
+                        </div>
+                        <div class="col">
+                            <div class="text">{{ user_detail.last_name }}</div>
+                        </div>
+                    </li>
+                {% endif %}
+
+
             </ul>
         </div>
-    </header>
+    </section>
+    </body>
+
 {% endblock %}
 
 {% block scripts %}

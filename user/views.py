@@ -52,13 +52,20 @@ class UserLogoutView(View):
 
 class UserDetailView(TemplateView):
     template_name = 'user/detail.html'
-    context_object_name = 'donation'
 
     def get_context_data(self, **kwargs):
+        info = self.kwargs['info']
         context = super().get_context_data(**kwargs)
-        user = get_user_model().objects.get(id=self.request.user.id)
-        context['donations'] = Donation.objects.filter(user_id=user.id, is_taken=False)
-        context['taken_donations'] = Donation.objects.filter(user_id=user.id, is_taken=True)
+        print(info, 'XDDD')
+        if info == 'donations_in_progress' or not info:
+            context['donations_in_progress'] = Donation.objects.filter(user=self.request.user, is_taken=False)
+        elif info == 'realized_donations':
+            context['realized_donations'] = Donation.objects.filter(user=self.request.user, is_taken=True)
+        elif info == 'user_detail':
+            context['user_detail'] = get_user_model().objects.get(pk=self.request.user.pk)
+
+        print(context)
+
         return context
 
 
@@ -67,7 +74,7 @@ class UserDonationUpdateStatusView(View):
         donation = Donation.objects.get(id=kwargs.get('pk'))
         donation.is_taken = True
         donation.save()
-        return redirect(reverse_lazy('user:detail'))
+        return redirect(reverse_lazy('user:detail', kwargs={'info': 'donations_in_progress'}))
 
 
 class UserChangePasswordView(FormView):
