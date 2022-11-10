@@ -22,6 +22,11 @@ class LoginUserView(FormView):
 
     def form_valid(self, form):
         user = get_user_model().objects.get(email=form.cleaned_data['user_email'])
+
+        if not user.is_active:
+            messages.add_message(self.request, messages.ERROR, 'Twoje konto nie zostało aktywowane.')
+            return super().form_invalid(form)
+
         login(self.request, user)
 
         return super().form_valid(form)
