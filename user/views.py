@@ -2,7 +2,7 @@ from django.views.generic import TemplateView, FormView, View
 from django.contrib.auth import login, logout, get_user_model
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 from . import forms
 from . import tokens
@@ -90,9 +90,11 @@ class UserChangePasswordView(FormView):
 class ActivateUserView(View):
     def get(self, request, *args, **kwargs):
         user = get_user_model().objects.get(id=kwargs.get('pk'))
+
         if tokens.token_generator.check_token(user, kwargs.get('token')):
             user.is_active = True
             user.save()
+            messages.success(request, 'Dzękujemy za aktywację konta!')
             return redirect(reverse_lazy('user:login'))
         return redirect(reverse_lazy('home:landing_page'))
 
