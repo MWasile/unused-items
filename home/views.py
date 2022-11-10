@@ -1,10 +1,12 @@
 import json
+
 from django.http import HttpResponse
 from django.db import DatabaseError
 from django.db.models.aggregates import Sum
-from django.views.generic import TemplateView, ListView, FormView
+from django.views.generic import TemplateView, ListView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
 
 from . import models
 
@@ -62,9 +64,28 @@ class AddDonationView(LoginRequiredMixin, TemplateView):
 
         except DatabaseError:
             return HttpResponse(status=400)
-        # finally:
-        #     return HttpResponse(status=404)
 
 
 class DonationConfirmationView(LoginRequiredMixin, TemplateView):
     template_name = 'home/form-confirmation.html'
+
+
+class ContactFormView(View):
+    def post(self, *args, **kwargs):
+        data = json.loads(self.request.body)
+
+        name, email, message = data['userName']['value'], data['userEmail']['value'], data['userMessage']['value']
+
+        if not name or not email or not message:
+            return HttpResponse(status=400)
+
+        try:
+            user_message = models.UserMessageToAdmin.objects.create(
+                name=name,
+                email=email,
+                message=message
+            )
+            user_message.save()
+            return HttpResponse(status=200, content='Wiadomość została wysłana')
+        except DatabaseError:
+            return HttpResponse(status=400, content='Wystąpił błąd podczas wysyłania wiadomości')

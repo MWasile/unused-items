@@ -89,9 +89,6 @@ class UserChangePasswordView(FormView):
 
 class ActivateUserView(View):
     def get(self, request, *args, **kwargs):
-        print('Token:', kwargs.get('token'))
-        print('PK:', kwargs.get('pk'))
-
         user = get_user_model().objects.get(id=kwargs.get('pk'))
         if tokens.token_generator.check_token(user, kwargs.get('token')):
             user.is_active = True

@@ -40,3 +40,12 @@ class Donation(models.Model):
 
     def __str__(self):
         return f'Donation: Address - {self.address}, City - {self.city}'
+
+
+class UserMessageToAdmin(models.Model):
+    name = models.CharField(max_length=150)
+    email = models.EmailField()
+    message = models.TextField(max_length=1000)
+
+    def __str__(self):
+        return f'UserMessageToAdmin: Name - {self.name}, Email - {self.email}'
