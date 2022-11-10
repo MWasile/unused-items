@@ -99,10 +99,10 @@ class PasswordResetEmailCheckerForm(forms.Form):
         email = self.cleaned_data['email']
 
         if not self.cleaned_data['email']:
-            raise forms.ValidationError('Email is required')
+            raise forms.ValidationError('Wpisz poprawny e-mail.')
 
         if not get_user_model().objects.filter(email=email).exists():
-            raise forms.ValidationError('Email doesnt exist.')
+            raise forms.ValidationError('Podany e-email nie istnieje.')
 
         return email
 
@@ -111,11 +111,11 @@ class PaswordResetSetPasswordForm(forms.Form):
     new_password = forms.CharField(max_length=200)
     re_new_password = forms.CharField(max_length=200)
 
-    def clean_password(self):
-        password = self.cleaned_data['password']
-        re_password = self.data['re_password']
+    def clean_new_password(self):
+        password = self.cleaned_data['new_password']
+        re_password = self.data['re_new_password']
 
         if password != re_password:
-            raise forms.ValidationError('The passwords are not matching.')
+            raise forms.ValidationError('Hasła nie są identyczne!.')
 
         return password

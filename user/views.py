@@ -113,6 +113,8 @@ class ResetPasswordGenerateTokenView(FormView):
             token=token
         )
 
+        messages.success(self.request, 'Email z linkiem do zmiany hasła został wysłany!')
+
         user.email_user(
             'Reset your password',
             f'Please click on the link for a password reset:'
@@ -131,6 +133,7 @@ class ResetPasswordValidateTokenChangePassword(FormView):
         user.set_password(form.cleaned_data['new_password'])
         user.save()
 
+        messages.success(self.request, 'Hasło zostało zmienione!')
         return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
@@ -139,12 +142,12 @@ class ResetPasswordValidateTokenChangePassword(FormView):
         save_token = models.UserResetToken.objects.filter(token=user_token).first()
 
         if not save_token:
-            # TODO: template with error message (token not found)
-            return redirect(reverse_lazy('home:landing_page'))
+            messages.error(request, 'Link do zmiany hasła jest nieprawidłowy!')
+            return redirect(reverse_lazy('user:login'))
 
         if save_token.used:
-            # TODO: template with error massage (token already used)
-            return redirect(reverse_lazy('home:landing_page'))
+            messages.error(request, 'Link do zmiany hasła został już wykorzystany!')
+            return redirect(reverse_lazy('user:login'))
 
         save_token.used = True
         save_token.save()
