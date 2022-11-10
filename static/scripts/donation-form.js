@@ -133,8 +133,6 @@ btnStageSix.addEventListener('click', function (e) {
         headers: {"X-CSRFToken": getCookie("csrftoken")},
         body: JSON.stringify(donationFormDetails)
     }).then((response) => {
-        console.log('success');
-        console.log(response.status);
 
         if (response.status === 200) {
             window.location.replace("/donation/confirmation/");
