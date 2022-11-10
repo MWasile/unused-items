@@ -45,6 +45,7 @@ class ContactForm {
                 this.setError();
             } else {
                  document.querySelector('#err-text').innerHTML = 'Dziękujemy za wiadomość.';
+                 document.querySelector('#info').innerHTML = '';
                  this.afterSubmit();
             }
 
