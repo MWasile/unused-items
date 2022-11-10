@@ -11,4 +11,7 @@ urlpatterns = [
     path('donation/<int:pk>', views.UserDonationUpdateStatusView.as_view(), name='taken'),
     path('password', views.UserChangePasswordView.as_view(), name='password'),
     path('activate/<int:pk>/<str:token>', views.ActivateUserView.as_view(), name='activate'),
+    path('reset_password', views.ResetPasswordGenerateTokenView.as_view(), name='reset_password'),
+    path('reset/<str:token>', views.ResetPasswordValidateTokenChangePassword.as_view(),
+         name='reset_password_token'),
 ]

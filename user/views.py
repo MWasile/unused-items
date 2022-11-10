@@ -1,11 +1,13 @@
 from django.views.generic import TemplateView, FormView, View
-from django.contrib.auth import login, authenticate, logout, get_user_model
+from django.contrib.auth import login, logout, get_user_model
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from . import forms
 from . import tokens
-from home import models
+from . import models
+from home.models import Donation
 
 
 class LoginUserView(FormView):
@@ -42,9 +44,7 @@ class RegiserUserView(FormView):
             f'Please click the link to activate your account: http://{self.request.get_host()}/user/activate/{user.pk}/{token}')
 
 
-class UserLogoutView(TemplateView):
-    template_name = ''
-
+class UserLogoutView(View):
     def get(self, request, *args, **kwargs):
         logout(request)
         return redirect(reverse_lazy('home:landing_page'))
@@ -57,16 +57,14 @@ class UserDetailView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = get_user_model().objects.get(id=self.request.user.id)
-        context['donations'] = models.Donation.objects.filter(user_id=user.id, is_taken=False)
-        context['taken_donations'] = models.Donation.objects.filter(user_id=user.id, is_taken=True)
+        context['donations'] = Donation.objects.filter(user_id=user.id, is_taken=False)
+        context['taken_donations'] = Donation.objects.filter(user_id=user.id, is_taken=True)
         return context
 
 
-class UserDonationUpdateStatusView(TemplateView):
-    template_name = ''
-
+class UserDonationUpdateStatusView(View):
     def get(self, request, *args, **kwargs):
-        donation = models.Donation.objects.get(id=kwargs.get('pk'))
+        donation = Donation.objects.get(id=kwargs.get('pk'))
         donation.is_taken = True
         donation.save()
         return redirect(reverse_lazy('user:detail'))
@@ -91,7 +89,6 @@ class UserChangePasswordView(FormView):
 
 class ActivateUserView(View):
     def get(self, request, *args, **kwargs):
-
         print('Token:', kwargs.get('token'))
         print('PK:', kwargs.get('pk'))
 
@@ -101,3 +98,56 @@ class ActivateUserView(View):
             user.save()
             return redirect(reverse_lazy('user:login'))
         return redirect(reverse_lazy('home:landing_page'))
+
+
+class ResetPasswordGenerateTokenView(FormView):
+    template_name = 'user/password_reset.html'
+    form_class = forms.PasswordResetEmailCheckerForm
+    success_url = reverse_lazy('user:login')
+
+    def form_valid(self, form):
+        user = get_user_model().objects.get(email=form.cleaned_data['email'])
+        token = tokens.password_reset_token.make_token(user)
+
+        models.UserResetToken.objects.create(
+            user=user,
+            token=token
+        )
+
+        user.email_user(
+            'Reset your password',
+            f'Please click on the link for a password reset:'
+            f' http://{self.request.get_host()}/user/reset/{token}')
+
+        return super().form_valid(form)
+
+
+class ResetPasswordValidateTokenChangePassword(FormView):
+    template_name = 'user/reset_change_password.html'
+    form_class = forms.PaswordResetSetPasswordForm
+    success_url = reverse_lazy('user:login')
+
+    def form_valid(self, form):
+        user = models.UserResetToken.objects.get(token=self.kwargs.get('token')).user
+        user.set_password(form.cleaned_data['new_password'])
+        user.save()
+
+        return super().form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        user_token = kwargs.get('token')
+
+        save_token = models.UserResetToken.objects.filter(token=user_token).first()
+
+        if not save_token:
+            # TODO: template with error message (token not found)
+            return redirect(reverse_lazy('home:landing_page'))
+
+        if save_token.used:
+            # TODO: template with error massage (token already used)
+            return redirect(reverse_lazy('home:landing_page'))
+
+        save_token.used = True
+        save_token.save()
+
+        return super().get(request, *args, **kwargs)

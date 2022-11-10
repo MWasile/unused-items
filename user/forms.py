@@ -90,3 +90,32 @@ class PasswordChangeForm(forms.Form):
             raise forms.ValidationError('Password must be at least 6 characters')
 
         return new_password
+
+
+class PasswordResetEmailCheckerForm(forms.Form):
+    email = forms.CharField(max_length=255)
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        if not self.cleaned_data['email']:
+            raise forms.ValidationError('Email is required')
+
+        if not get_user_model().objects.filter(email=email).exists():
+            raise forms.ValidationError('Email doesnt exist.')
+
+        return email
+
+
+class PaswordResetSetPasswordForm(forms.Form):
+    new_password = forms.CharField(max_length=200)
+    re_new_password = forms.CharField(max_length=200)
+
+    def clean_password(self):
+        password = self.cleaned_data['password']
+        re_password = self.data['re_password']
+
+        if password != re_password:
+            raise forms.ValidationError('The passwords are not matching.')
+
+        return password
