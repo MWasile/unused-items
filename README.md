@@ -21,7 +21,7 @@ Clone the project
 git clone git@github.com:MWasile/unused-items.git
 ```
 
-Swtich branch
+Switch branch
 
 ```bash
 git checkout MW-11-bug_fix
@@ -43,9 +43,9 @@ docker compose up
 ## Features
 
 - Setup your own organization in the administration panel.
-- As user adds a gift.
+- Add donation as a user.
 - Send a message to the administrator in the contact form.
-- Check your donation and when done mark it on the profile page!
+- Check your donation and when it's done, tag it on the profile page!
 - Verify how many bags we have collected.
 - Check all the organizations we work with.
 
@@ -58,7 +58,7 @@ To deploy this project run
 git clone git@github.com:MWasile/unused-items.git
 ```
 
-Set up your own '.env' file in:
+Setup your own '.env' file in:
 ```bash
 project/env/
 ```
