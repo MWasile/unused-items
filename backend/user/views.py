@@ -44,9 +44,11 @@ class RegiserUserView(FormView):
 
     def send_activation_email(self, user):
         token = tokens.token_generator.make_token(user)
+        domain = 'unused-items.maciejwasilewski.pl'
         user.email_user(
             'Activate your account',
-            f'Please click the link to activate your account: http://{self.request.get_host()}/user/activate/{user.pk}/{token}')
+            f'Please click the link to activate your account: https://{domain}/user/activate/{user.pk}/{token}')
+        messages.add_message(self.request, messages.INFO, 'Na podany adres email został wysłany link aktywacyjny.')
 
 
 class UserLogoutView(View):
