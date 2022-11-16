@@ -1,4 +1,4 @@
-FROM python:3.10.8-alpine
+FROM python:3.11-alpine
 
 WORKDIR /app
 
@@ -13,3 +13,11 @@ COPY Pipfile Pipfile.lock ./
 
 RUN pip install -U pipenv
 RUN pipenv install --system
+
+
+COPY ./entrypoint.sh .
+RUN chmod +x ./entrypoint.sh
+
+COPY . .
+
+ENTRYPOINT ["./entrypoint.sh"]
