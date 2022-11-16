@@ -29,6 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get('DJ_ALLOWED_HOSTS').split()
 
+CSRF_TRUSTED_ORIGINS = os.environ.get('DJ_CSRF_TRUSTED_ORIGINS').split()
 
 # Application definition
 
