@@ -1,9 +1,39 @@
 services:
-  unused_items_backend:
+  web:
     build:
-      context: .
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - 8000:8000
+      context: ./backend
+      dockerfile: Dockerfile
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - 8000
+    depends_on:
+      - db
+    restart: on-failure
     volumes:
-      - ../unused-items:/app
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    env_file:
+      - env/.env
+
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - db_volumes:/var/lib/postgresql/data
+    env_file:
+      - env/.env
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+
+volumes:
+  db_volumes:
+  static_volume:
+  media_volume:
+

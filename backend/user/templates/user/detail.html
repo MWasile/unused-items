@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %} {% endblock %}
+
+{% block content %}
+
+    <body>
+    <header>
+        <nav class="container container--70">
+            <ul class="nav--actions">
+            </ul>
+
+            <ul>
+                <li><a href="{% url 'home:landing_page' %}">Start</a></li>
+                <li><a href="{% url 'home:landing_page' %}#steps" class="btn btn--without-border">O co chodzi?</a></li>
+                <li><a href="{% url 'home:landing_page' %}#about-us" class="btn btn--without-border">O nas</a></li>
+                <li><a href="{% url 'home:landing_page' %}#help" class="btn btn--without-border">Fundacje i
+                    organizacje</a></li>
+                <li><a href="{% url 'home:add_donation' %}" class="btn btn--without-border">Przekaż dary</a></li>
+                <li><a href="{% url 'home:landing_page' %}#contact" class="btn btn--without-border">Kontakt</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="help" class="help">
+        <h2>Szczegóły konta</h2>
+
+        <ul class="help--buttons">
+            <li data-id="1"><a href="{% url 'user:detail' 'donations_in_progress' %}" class="XD">Dary w trakcie
+                przekazywania</a></li>
+            <li data-id="2"><a href="{% url 'user:detail' 'realized_donations' %}" class="XD">Dary odebrane</a>
+            </li>
+            <li data-id="3"><a href="{% url 'user:detail' 'user_detail' %}" class="XD">Informacje o koncie</a>
+            </li>
+        </ul>
+
+        <!-- SLIDE 1 -->
+
+        <div class="help--slides active" data-id="1">
+            <ul class="help--slides-items">
+
+
+                {% if donations_in_progress %}
+                    {% for donation in donations_in_progress %}
+                        <li>
+                            <div class="col">
+                                <div class="title">Fundacja: {{ donation.institution.name }}</div>
+                                <div class="subtitle">Cel i misja: {{ donation.institution.decription }}.</div>
+                            </div>
+                            <div class="col">
+                                <div class="text">
+                                    <a href="{% url 'user:taken' donation.pk %}">Potwierdź odebranie!</a></div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+
+
+
+                {% if realized_donations %}
+                    {% for donation in realized_donations %}
+                        <li>
+                            <div class="col">
+                                <div class="title">Fundacja "{{ donation.institution.name }}"</div>
+                                <div class="subtitle">Cel i misja: {{ donation.institution.decription  }}.</div>
+                            </div>
+                            <div class="col">
+                                <div class="text">Data odebrania: {{ donation.pick_up_date }}</div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+
+
+                {% if user_detail %}
+                    <li>
+                        <div class="col">
+                            <div class="title">Twój e-mail:</div>
+                        </div>
+                        <div class="col">
+                            <div class="text">{{ user_detail.email }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="col">
+                            <div class="title">Twoje imię:</div>
+                        </div>
+                        <div class="col">
+                            <div class="text">{{ user_detail.username }}</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="col">
+                            <div class="title">Twoje nazwisko:</div>
+                        </div>
+                        <div class="col">
+                            <div class="text">{{ user_detail.last_name }}</div>
+                        </div>
+                    </li>
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </section>
+    </body>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'scripts/app-min.js' %}" defer async></script>
+    <script src="{% static 'scripts/contact-form-minn.js' %}" defer async></script>
+{% endblock %}
